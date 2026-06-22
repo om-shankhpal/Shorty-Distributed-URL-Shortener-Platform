@@ -5,6 +5,7 @@ import com.shorty.auth_service.dto.LoginRequest;
 import com.shorty.auth_service.dto.RegisterRequest;
 import com.shorty.auth_service.entity.User;
 import com.shorty.auth_service.repository.UserRepository;
+import com.shorty.auth_service.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +18,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
@@ -31,11 +33,14 @@ public class AuthService {
                 .build();
 
         User savedUser = userRepository.save(user);
+        String token = jwtUtil.generateToken(savedUser);
 
         return AuthResponse.builder()
                 .userId(savedUser.getId())
                 .email(savedUser.getEmail())
                 .fullName(savedUser.getFullName())
+                .token(token)
+                .tokenType("Bearer")
                 .build();
     }
 
@@ -47,11 +52,14 @@ public class AuthService {
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Invalid email or password");
         }
+        String token = jwtUtil.generateToken(user);
 
         return AuthResponse.builder()
                 .userId(user.getId())
                 .email(user.getEmail())
                 .fullName(user.getFullName())
+                .token(token)
+                .tokenType("Bearer")
                 .build();
     }
 }
