@@ -4,10 +4,11 @@ import com.shorty.auth_service.dto.AuthResponse;
 import com.shorty.auth_service.dto.LoginRequest;
 import com.shorty.auth_service.dto.RegisterRequest;
 import com.shorty.auth_service.entity.User;
+import com.shorty.auth_service.exception.DuplicateEmailException;
+import com.shorty.auth_service.exception.InvalidCredentialsException;
 import com.shorty.auth_service.repository.UserRepository;
 import com.shorty.auth_service.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,7 @@ public class AuthService {
     @Transactional
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalStateException("Email already in use: " + request.getEmail());
+            throw new DuplicateEmailException(request.getEmail());
         }
 
         User user = User.builder()
@@ -47,10 +48,10 @@ public class AuthService {
     @Transactional(readOnly = true)
     public AuthResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+                .orElseThrow(() -> new InvalidCredentialsException());
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("Invalid email or password");
+            throw new InvalidCredentialsException();
         }
         String token = jwtUtil.generateToken(user);
 
