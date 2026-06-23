@@ -19,7 +19,6 @@ public class UrlService {
     private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final int SHORT_CODE_LENGTH = 6;
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
-
     private final UrlRepository urlRepository;
 
     @Value("${app.base-url}")
