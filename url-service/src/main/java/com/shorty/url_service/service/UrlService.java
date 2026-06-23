@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -73,5 +74,14 @@ public class UrlService {
                 .orElseThrow(() ->
                         new UrlNotFoundException(shortCode)
                 );
+    }
+
+    @Transactional(readOnly = true)
+    public List<UrlResponse> getUrlsByUser(UUID userId) {
+
+        return urlRepository.findByUserId(userId)
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 }

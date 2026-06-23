@@ -7,11 +7,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -25,6 +23,18 @@ public class UrlController {
     public ResponseEntity<UrlResponse> createShortUrl(@Valid @RequestBody CreateUrlRequest request) {
         UUID userId = UUID.fromString("11111111-1111-1111-1111-111111111111");
         return ResponseEntity.status(HttpStatus.CREATED).body(urlService.createShortUrl(request, userId));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UrlResponse>> getMyUrls() {
+
+        UUID userId = UUID.fromString(
+                "11111111-1111-1111-1111-111111111111"
+        );
+
+        return ResponseEntity.ok(
+                urlService.getUrlsByUser(userId)
+        );
     }
 
 }
