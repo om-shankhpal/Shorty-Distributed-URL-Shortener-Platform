@@ -3,6 +3,7 @@ package com.shorty.url_service.service;
 import com.shorty.url_service.dto.CreateUrlRequest;
 import com.shorty.url_service.dto.UrlResponse;
 import com.shorty.url_service.entity.Url;
+import com.shorty.url_service.exception.UrlNotFoundException;
 import com.shorty.url_service.repository.UrlRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,6 +70,8 @@ public class UrlService {
     public String getOriginalUrl(String shortCode) {
         return urlRepository.findByShortCode(shortCode)
                 .map(Url::getOriginalUrl)
-                .orElseThrow(() -> new IllegalArgumentException("Short code not found: " + shortCode));
+                .orElseThrow(() ->
+                        new UrlNotFoundException(shortCode)
+                );
     }
 }
