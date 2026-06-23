@@ -64,4 +64,11 @@ public class UrlService {
                 .createdAt(url.getCreatedAt())
                 .build();
     }
+
+    @Transactional(readOnly = true)
+    public String getOriginalUrl(String shortCode) {
+        return urlRepository.findByShortCode(shortCode)
+                .map(Url::getOriginalUrl)
+                .orElseThrow(() -> new IllegalArgumentException("Short code not found: " + shortCode));
+    }
 }
