@@ -37,4 +37,13 @@ public class UrlController {
         );
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUrl(
+            @PathVariable UUID id
+    ) {
+        urlService.deleteUrl(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
 }

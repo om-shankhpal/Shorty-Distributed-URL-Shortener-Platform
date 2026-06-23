@@ -84,4 +84,13 @@ public class UrlService {
                 .map(this::toResponse)
                 .toList();
     }
+
+    @Transactional
+    public void deleteUrl(UUID id) {
+
+        Url url = urlRepository.findById(id)
+                .orElseThrow(() -> new UrlNotFoundException(id));
+
+        urlRepository.delete(url);
+    }
 }
