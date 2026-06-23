@@ -35,7 +35,7 @@ public class UrlService {
                 .userId(userId)
                 .build();
 
-        Url savedUrl = urlRepository.save(url);
+        Url savedUrl = urlRepository.saveAndFlush(url);
 
         return toResponse(savedUrl);
     }
