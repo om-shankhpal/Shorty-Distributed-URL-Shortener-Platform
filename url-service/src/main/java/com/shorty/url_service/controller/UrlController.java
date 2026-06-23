@@ -36,7 +36,6 @@ public class UrlController {
             HttpServletRequest requestContext
     ) {
         UUID userId = (UUID) requestContext.getAttribute("userId");
-
         return ResponseEntity.ok(
                 urlService.getUrlsByUser(userId)
         );
