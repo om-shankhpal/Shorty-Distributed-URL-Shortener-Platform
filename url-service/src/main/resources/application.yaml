@@ -22,3 +22,6 @@ server:
 
 app:
   base-url: http://localhost:8082
+
+jwt:
+  secret: VGhpc0lzQVN1cGVyU2VjcmV0S2V5Rm9ySldUU2lnbmluZzEyMzQ1Njc4OTA=
