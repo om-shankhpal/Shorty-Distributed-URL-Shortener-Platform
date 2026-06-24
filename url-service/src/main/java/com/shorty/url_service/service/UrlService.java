@@ -3,6 +3,7 @@ package com.shorty.url_service.service;
 import com.shorty.url_service.dto.CreateUrlRequest;
 import com.shorty.url_service.dto.UrlResponse;
 import com.shorty.url_service.entity.Url;
+import com.shorty.url_service.exception.ForbiddenException;
 import com.shorty.url_service.exception.UrlNotFoundException;
 import com.shorty.url_service.repository.UrlRepository;
 import lombok.RequiredArgsConstructor;
@@ -86,10 +87,14 @@ public class UrlService {
     }
 
     @Transactional
-    public void deleteUrl(UUID id) {
+    public void deleteUrl(UUID id, UUID currentUserId) {
 
         Url url = urlRepository.findById(id)
                 .orElseThrow(() -> new UrlNotFoundException(id));
+
+        if (!url.getUserId().equals(currentUserId)) {
+            throw new ForbiddenException();
+        }
 
         urlRepository.delete(url);
     }

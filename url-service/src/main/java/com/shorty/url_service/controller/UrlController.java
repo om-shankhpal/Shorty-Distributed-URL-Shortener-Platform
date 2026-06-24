@@ -43,11 +43,13 @@ public class UrlController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUrl(
-            @PathVariable UUID id
+            @PathVariable UUID id,
+            HttpServletRequest request
     ) {
-        urlService.deleteUrl(id);
+        UUID userId = (UUID) request.getAttribute("userId");
+
+        urlService.deleteUrl(id, userId);
 
         return ResponseEntity.noContent().build();
     }
-
 }
