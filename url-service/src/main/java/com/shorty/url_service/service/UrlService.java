@@ -18,11 +18,12 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class UrlService {
-
     private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final int SHORT_CODE_LENGTH = 6;
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+
     private final UrlRepository urlRepository;
+    private final UrlCacheService urlCacheService;
 
     @Value("${app.base-url}")
     private String baseUrl;
@@ -40,6 +41,49 @@ public class UrlService {
         Url savedUrl = urlRepository.saveAndFlush(url);
 
         return toResponse(savedUrl);
+    }
+
+    @Transactional(readOnly = true)
+    public String getOriginalUrl(String shortCode) {
+
+        return urlCacheService.get(shortCode)
+                .orElseGet(() -> {
+
+                    String originalUrl = urlRepository.findByShortCode(shortCode)
+                            .map(Url::getOriginalUrl)
+                            .orElseThrow(() ->
+                                    new UrlNotFoundException(shortCode)
+                            );
+
+                    urlCacheService.put(shortCode, originalUrl);
+
+                    return originalUrl;
+                });
+    }
+
+    @Transactional(readOnly = true)
+    public List<UrlResponse> getUrlsByUser(UUID userId) {
+
+        return urlRepository.findByUserId(userId)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    @Transactional
+    public void deleteUrl(UUID id, UUID currentUserId) {
+
+        Url url = urlRepository.findById(id)
+                .orElseThrow(() -> new UrlNotFoundException(id));
+
+        if (!url.getUserId().equals(currentUserId)) {
+            throw new ForbiddenException();
+        }
+
+        urlRepository.delete(url);
+
+        // Add cache eviction later
+        // urlCacheService.evict(url.getShortCode());
     }
 
     private String generateUniqueShortCode() {
@@ -66,36 +110,5 @@ public class UrlService {
                 .shortUrl(baseUrl + "/" + url.getShortCode())
                 .createdAt(url.getCreatedAt())
                 .build();
-    }
-
-    @Transactional(readOnly = true)
-    public String getOriginalUrl(String shortCode) {
-        return urlRepository.findByShortCode(shortCode)
-                .map(Url::getOriginalUrl)
-                .orElseThrow(() ->
-                        new UrlNotFoundException(shortCode)
-                );
-    }
-
-    @Transactional(readOnly = true)
-    public List<UrlResponse> getUrlsByUser(UUID userId) {
-
-        return urlRepository.findByUserId(userId)
-                .stream()
-                .map(this::toResponse)
-                .toList();
-    }
-
-    @Transactional
-    public void deleteUrl(UUID id, UUID currentUserId) {
-
-        Url url = urlRepository.findById(id)
-                .orElseThrow(() -> new UrlNotFoundException(id));
-
-        if (!url.getUserId().equals(currentUserId)) {
-            throw new ForbiddenException();
-        }
-
-        urlRepository.delete(url);
     }
 }
