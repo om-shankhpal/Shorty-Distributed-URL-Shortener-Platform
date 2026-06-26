@@ -1,0 +1,173 @@
+# ============================================================
+# Shorty — Infrastructure Docker Compose
+# Services: Zookeeper, Kafka, Redis
+# ============================================================
+# Usage:
+#   Start:  docker compose -f infrastructure/docker-compose.yml up -d
+#   Stop:   docker compose -f infrastructure/docker-compose.yml down
+#   Logs:   docker compose -f infrastructure/docker-compose.yml logs -f
+# ============================================================
+
+services:
+
+  # ─────────────────────────────────────────────────────────
+  # Zookeeper
+  # Kafka's coordination service. Manages broker metadata,
+  # leader election, and cluster membership. Kafka cannot
+  # start or operate without a healthy Zookeeper instance.
+  # ─────────────────────────────────────────────────────────
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.1
+    container_name: shorty-zookeeper
+    restart: unless-stopped
+    ports:
+      # Exposes Zookeeper to the host for debugging tools (e.g. ZooNavigator)
+      - "2181:2181"
+    environment:
+      # Port that Kafka brokers and clients use to connect to Zookeeper
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+      # Tick time is the basic unit of time in Zookeeper (milliseconds).
+      # Used for heartbeats and minimum session/connection timeouts.
+      ZOOKEEPER_TICK_TIME: 2000
+
+      # How many ticks a follower can take to sync with the leader
+      ZOOKEEPER_SYNC_LIMIT: 2
+    volumes:
+      # Persist Zookeeper snapshots across container restarts
+      - zookeeper-data:/var/lib/zookeeper/data
+      # Persist Zookeeper transaction logs across container restarts
+      - zookeeper-logs:/var/lib/zookeeper/log
+    networks:
+      - shorty-network
+
+  # ─────────────────────────────────────────────────────────
+  # Kafka
+  # The core message broker. Handles all event streaming
+  # between Shorty microservices. Depends on Zookeeper
+  # being available before starting.
+  # ─────────────────────────────────────────────────────────
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: shorty-kafka
+    restart: unless-stopped
+    depends_on:
+      - zookeeper
+    ports:
+      # 9092 is exposed to the host so Spring Boot apps
+      # running outside Docker can produce and consume messages
+      - "9092:9092"
+    environment:
+      # Unique numeric ID for this broker within the Kafka cluster
+      KAFKA_BROKER_ID: 1
+
+      # Tells Kafka where Zookeeper is — uses the Docker service name
+      # since both containers share the shorty-network
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+      # Defines two named listeners and their security protocols:
+      # PLAINTEXT      → for internal Docker-to-Docker communication
+      # PLAINTEXT_HOST → for external host machine communication
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+
+      # Kafka binds to these addresses inside the container:
+      # 0.0.0.0:29092 → internal Docker network
+      # 0.0.0.0:9092  → exposed to the host via port mapping
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
+
+      # CRITICAL: Addresses Kafka advertises to producers and consumers.
+      # Clients receive these addresses after the initial connection and
+      # use them for all subsequent communication.
+      # kafka:29092     → Docker services use the container hostname
+      # localhost:9092  → Spring Boot apps on the host use localhost
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+
+      # Which listener Kafka brokers use to talk to each other
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+
+      # Required for single-node setup. Default is 3, which would fail
+      # because there are not enough brokers to meet the replication factor.
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+      # Same as above — required for exactly-once transactional producers
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+
+      # Number of partitions for auto-created topics.
+      # Increase later if you need parallel consumers per topic.
+      KAFKA_NUM_PARTITIONS: 1
+
+      # Automatically create topics when a producer or consumer
+      # references them. Convenient for development.
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+
+      # Reduce noisy INFO logs from internal Kafka controllers
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=WARN,kafka.producer.async.DefaultEventHandler=WARN,state.change.logger=WARN"
+
+      # How long to retain messages regardless of consumer activity (7 days)
+      KAFKA_LOG_RETENTION_HOURS: 168
+
+      # Maximum size of a single log segment file before rolling
+      KAFKA_LOG_SEGMENT_BYTES: 1073741824
+
+      # How frequently (ms) the log cleaner checks for segments to delete
+      KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 300000
+    volumes:
+      # Persist Kafka topic data and offsets across container restarts
+      - kafka-data:/var/lib/kafka/data
+    networks:
+      - shorty-network
+
+  # ─────────────────────────────────────────────────────────
+  # Redis
+  # In-memory cache used by url-service for short code
+  # lookups. AOF persistence enabled so cached data
+  # survives container restarts.
+  # ─────────────────────────────────────────────────────────
+  redis:
+    image: redis:7.2-alpine
+    container_name: shorty-redis
+    restart: unless-stopped
+    ports:
+      # Expose Redis to the host so Spring Boot services
+      # running outside Docker can connect on localhost:6379
+      - "6379:6379"
+    command:
+      # Enable Append Only File persistence — every write is logged
+      # to disk so data is not lost on restart
+      - redis-server
+      - --appendonly yes
+      # Log level: debug | verbose | notice | warning
+      - --loglevel notice
+    volumes:
+      # Persist AOF and RDB snapshot files across restarts
+      - redis-data:/data
+    networks:
+      - shorty-network
+
+# ─────────────────────────────────────────────────────────
+# Named Volumes
+# Docker manages these on the host filesystem.
+# Data survives container restarts and removals.
+# Remove with: docker compose down -v
+# ─────────────────────────────────────────────────────────
+volumes:
+  zookeeper-data:
+    name: shorty-zookeeper-data
+  zookeeper-logs:
+    name: shorty-zookeeper-logs
+  kafka-data:
+    name: shorty-kafka-data
+  redis-data:
+    name: shorty-redis-data
+
+# ─────────────────────────────────────────────────────────
+# Network
+# All containers share a bridge network so they can
+# resolve each other by container/service name (e.g.
+# kafka:29092, redis:6379, zookeeper:2181)
+# ─────────────────────────────────────────────────────────
+networks:
+  shorty-network:
+    name: shorty-network
+    driver: bridge
