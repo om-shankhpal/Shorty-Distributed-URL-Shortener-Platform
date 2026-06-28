@@ -1,13 +1,16 @@
 package com.shorty.analytics_service.kafka;
 
+import com.shorty.analytics_service.service.AnalyticsService;
 import com.shorty.shared.event.ClickEvent;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
+@RequiredArgsConstructor
 public class ClickEventConsumer {
+
+    private final AnalyticsService analyticsService;
 
     @KafkaListener(
             topics = "${kafka.topics.click-events}",
@@ -15,11 +18,7 @@ public class ClickEventConsumer {
     )
     public void consume(ClickEvent event) {
 
-        log.info(
-                "[Kafka] Received ClickEvent. shortCode={} clickedAt={}",
-                event.shortCode(),
-                event.clickedAt()
-        );
+        analyticsService.recordClick(event);
 
     }
 }
