@@ -1,10 +1,12 @@
 package com.shorty.url_service.service;
 
+import com.shorty.shared.event.ClickEvent;
 import com.shorty.url_service.dto.CreateUrlRequest;
 import com.shorty.url_service.dto.UrlResponse;
 import com.shorty.url_service.entity.Url;
 import com.shorty.url_service.exception.ForbiddenException;
 import com.shorty.url_service.exception.UrlNotFoundException;
+import com.shorty.url_service.kafka.ClickEventProducer;
 import com.shorty.url_service.repository.UrlRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +26,7 @@ public class UrlService {
 
     private final UrlRepository urlRepository;
     private final UrlCacheService urlCacheService;
+    private final ClickEventProducer clickEventProducer;
 
     @Value("${app.base-url}")
     private String baseUrl;
@@ -46,19 +49,20 @@ public class UrlService {
     @Transactional(readOnly = true)
     public String getOriginalUrl(String shortCode) {
 
-        return urlCacheService.get(shortCode)
+        String originalUrl = urlCacheService.get(shortCode)
                 .orElseGet(() -> {
-
-                    String originalUrl = urlRepository.findByShortCode(shortCode)
+                    String dbUrl = urlRepository.findByShortCode(shortCode)
                             .map(Url::getOriginalUrl)
-                            .orElseThrow(() ->
-                                    new UrlNotFoundException(shortCode)
-                            );
+                            .orElseThrow(() -> new UrlNotFoundException(shortCode));
 
-                    urlCacheService.put(shortCode, originalUrl);
+                    urlCacheService.put(shortCode, dbUrl);
 
-                    return originalUrl;
+                    return dbUrl;
                 });
+
+        clickEventProducer.publish(ClickEvent.of(shortCode));
+
+        return originalUrl;
     }
 
     @Transactional(readOnly = true)
