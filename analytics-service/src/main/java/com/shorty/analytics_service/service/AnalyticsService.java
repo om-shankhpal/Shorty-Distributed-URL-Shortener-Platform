@@ -1,6 +1,9 @@
 package com.shorty.analytics_service.service;
 
+import com.shorty.analytics_service.dto.AnalyticsResponse;
 import com.shorty.analytics_service.entity.Click;
+import com.shorty.analytics_service.exception.AnalyticsNotFoundException;
+import com.shorty.analytics_service.projection.ClickStatsProjection;
 import com.shorty.analytics_service.repository.ClickRepository;
 import com.shorty.shared.event.ClickEvent;
 import lombok.RequiredArgsConstructor;
@@ -26,5 +29,18 @@ public class AnalyticsService {
         clickRepository.save(click);
 
         log.info("[Analytics] Click saved. shortCode={}", event.shortCode());
+    }
+
+    public AnalyticsResponse getAnalytics(String shortCode){
+        ClickStatsProjection stats =
+                clickRepository.getStatsByShortCode(shortCode)
+                        .orElseThrow(() -> new AnalyticsNotFoundException(shortCode));
+
+        return AnalyticsResponse.builder()
+                .shortCode(stats.getShortCode())
+                .firstClick(stats.getFirstClick())
+                .lastClick(stats.getLastClick())
+                .totalClicks(stats.getTotalClicks())
+                .build();
     }
 }
