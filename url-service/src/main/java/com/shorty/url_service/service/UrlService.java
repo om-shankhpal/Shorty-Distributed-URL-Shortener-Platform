@@ -2,6 +2,7 @@ package com.shorty.url_service.service;
 
 import com.shorty.shared.event.ClickEvent;
 import com.shorty.url_service.dto.CreateUrlRequest;
+import com.shorty.url_service.dto.OwnershipResponse;
 import com.shorty.url_service.dto.UrlResponse;
 import com.shorty.url_service.entity.Url;
 import com.shorty.url_service.exception.ForbiddenException;
@@ -113,6 +114,18 @@ public class UrlService {
                 .shortCode(url.getShortCode())
                 .shortUrl(baseUrl + "/" + url.getShortCode())
                 .createdAt(url.getCreatedAt())
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public OwnershipResponse verifyOwnership(String shortCode, UUID userId){
+        Url url = urlRepository.findByShortCode(shortCode)
+                .orElseThrow(() -> new UrlNotFoundException(shortCode));
+
+        boolean owner = url.getUserId().equals(userId);
+
+        return OwnershipResponse.builder()
+                .owner(owner)
                 .build();
     }
 }

@@ -2,6 +2,7 @@ package com.shorty.analytics_service.controller;
 
 import com.shorty.analytics_service.dto.AnalyticsResponse;
 import com.shorty.analytics_service.service.AnalyticsService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
@@ -20,10 +21,15 @@ public class AnalyticsController {
     private final AnalyticsService analyticsService;
 
     @GetMapping("/{shortCode}")
-    public ResponseEntity<AnalyticsResponse> getStats(@PathVariable String shortCode) {
+    public ResponseEntity<AnalyticsResponse> getStats(
+            @PathVariable String shortCode,
+            HttpServletRequest request
+    ) {
+        UUID userId = (UUID) request.getAttribute("userId");
 
-        AnalyticsResponse analytics = analyticsService.getAnalytics(shortCode);
+        AnalyticsResponse response =
+                analyticsService.getAnalytics(shortCode, userId);
 
-        return ResponseEntity.ok(analytics);
+        return ResponseEntity.ok(response);
     }
 }

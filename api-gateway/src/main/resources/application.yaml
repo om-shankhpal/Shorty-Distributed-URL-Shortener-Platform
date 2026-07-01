@@ -28,6 +28,11 @@ spring:
           predicates:
             - Path=/{shortCode}
 
+        - id: analytics-service
+          uri: lb://ANALYTICS-SERVICE
+          predicates:
+            - Path=/analytics/**
+
 eureka:
   client:
     service-url:
