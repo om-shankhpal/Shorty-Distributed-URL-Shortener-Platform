@@ -1,55 +1,13 @@
 import { Link } from "react-router-dom";
+import AuthLayout from "../components/layout/AuthLayout";
 
 export default function Login() {
   return (
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center px-6">
-      <div className="w-full max-w-md bg-slate-800 border border-slate-700 rounded-2xl p-8 shadow-xl">
-
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white">
-            Welcome Back
-          </h1>
-
-          <p className="text-slate-400 mt-2">
-            Login to continue managing your short URLs.
-          </p>
-        </div>
-
-        <form className="space-y-5">
-
-          <div>
-            <label className="block text-sm text-slate-300 mb-2">
-              Email
-            </label>
-
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white outline-none focus:border-blue-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm text-slate-300 mb-2">
-              Password
-            </label>
-
-            <input
-              type="password"
-              placeholder="Enter your password"
-              className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white outline-none focus:border-blue-500"
-            />
-          </div>
-
-          <button
-            className="w-full bg-blue-600 hover:bg-blue-500 transition-colors text-white font-semibold py-3 rounded-lg"
-          >
-            Login
-          </button>
-
-        </form>
-
-        <p className="text-center text-slate-400 mt-6">
+    <AuthLayout
+      title="Welcome Back"
+      subtitle="Login to continue managing your short URLs."
+      footer={
+        <>
           Don't have an account?{" "}
           <Link
             to="/register"
@@ -57,9 +15,40 @@ export default function Login() {
           >
             Register
           </Link>
-        </p>
+        </>
+      }
+    >
+      <form className="space-y-5">
+        <div>
+          <label className="block text-sm text-slate-300 mb-2">
+            Email
+          </label>
 
-      </div>
-    </div>
+          <input
+            type="email"
+            placeholder="Enter your email"
+            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white outline-none focus:border-blue-500"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm text-slate-300 mb-2">
+            Password
+          </label>
+
+          <input
+            type="password"
+            placeholder="Enter your password"
+            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white outline-none focus:border-blue-500"
+          />
+        </div>
+
+        <button
+          className="w-full bg-blue-600 hover:bg-blue-500 transition-colors text-white font-semibold py-3 rounded-lg"
+        >
+          Login
+        </button>
+      </form>
+    </AuthLayout>
   );
 }
