@@ -3,7 +3,11 @@ import { Routes, Route } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
+
+import DashboardLayout from "./components/layout/DashboardLayout";
+
+import Dashboard from "./pages/dashboard/Dashboard";
+import CreateUrl from "./pages/dashboard/CreateUrl";
 
 export default function App() {
   return (
@@ -11,7 +15,11 @@ export default function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/dashboard" element={<Dashboard />} />
+
+      <Route element={<DashboardLayout />}>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard/create" element={<CreateUrl />} />
+      </Route>
     </Routes>
   );
 }

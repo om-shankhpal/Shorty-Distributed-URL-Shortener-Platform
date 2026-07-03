@@ -29,25 +29,30 @@ spring:
           lower-case-service-id: true
 
       routes:
+
+        # AUTH SERVICE
         - id: auth-service
           uri: lb://AUTH-SERVICE
           predicates:
             - Path=/auth/**
 
+        # URL SERVICE (CRUD APIs)
         - id: url-service
           uri: lb://URL-SERVICE
           predicates:
             - Path=/urls/**
 
-        - id: redirect-service
-          uri: lb://URL-SERVICE
-          predicates:
-            - Path=/{shortCode}
-
+        # ANALYTICS SERVICE
         - id: analytics-service
           uri: lb://ANALYTICS-SERVICE
           predicates:
             - Path=/analytics/**
+
+        # REDIRECT (IMPORTANT - MUST BE LAST)
+        - id: redirect-service
+          uri: lb://URL-SERVICE
+          predicates:
+            - Path=/**
 
 eureka:
   client:

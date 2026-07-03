@@ -17,14 +17,17 @@ public class RedirectController {
     private final UrlService urlService;
 
     @GetMapping("/{shortCode}")
-    public ResponseEntity<Void> redirect(
-            @PathVariable String shortCode
-    ) {
+    public ResponseEntity<Void> redirect(@PathVariable String shortCode) {
+
         String originalUrl = urlService.getOriginalUrl(shortCode);
 
-        return ResponseEntity
-                .status(HttpStatus.FOUND)
-                .location(URI.create(originalUrl))
+        if (originalUrl == null || originalUrl.isBlank()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // SAFE redirect (no URI.create issues)
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .header("Location", originalUrl)
                 .build();
     }
 }
