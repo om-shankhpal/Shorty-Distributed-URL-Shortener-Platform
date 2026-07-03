@@ -16,6 +16,11 @@ export default function Login() {
         password,
       });
 
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("userId", response.userId);
+      localStorage.setItem("email", response.email);
+      localStorage.setItem("fullName", response.fullName);
+
       console.log(response);
     } catch (error) {
       console.error(error);
