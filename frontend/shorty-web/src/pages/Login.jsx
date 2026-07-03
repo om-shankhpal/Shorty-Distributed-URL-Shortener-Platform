@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../components/layout/AuthLayout";
 import { login } from "../services/authService";
 
 export default function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -20,6 +21,8 @@ export default function Login() {
       localStorage.setItem("userId", response.userId);
       localStorage.setItem("email", response.email);
       localStorage.setItem("fullName", response.fullName);
+
+      navigate("/dashboard");
 
       console.log(response);
     } catch (error) {
