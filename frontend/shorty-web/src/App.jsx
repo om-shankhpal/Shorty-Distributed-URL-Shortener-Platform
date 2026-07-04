@@ -8,6 +8,8 @@ import DashboardLayout from "./components/layout/DashboardLayout";
 
 import Dashboard from "./pages/dashboard/Dashboard";
 import CreateUrl from "./pages/dashboard/CreateUrl";
+import MyUrls from "./pages/dashboard/MyUrls";
+// import Profile from "./pages/dashboard/Profile";
 
 export default function App() {
   return (
@@ -19,6 +21,8 @@ export default function App() {
       <Route element={<DashboardLayout />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/create" element={<CreateUrl />} />
+        <Route path="/dashboard/urls" element={<MyUrls />} />
+        {/* <Route path="/dashboard/profile" element={<Profile />} /> */}
       </Route>
     </Routes>
   );
