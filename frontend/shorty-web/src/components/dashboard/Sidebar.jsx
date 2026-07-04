@@ -7,7 +7,6 @@ const NAV_ITEMS = [
   { label: "Dashboard",  icon: FiGrid,     to: "/dashboard"           },
   { label: "Create URL", icon: FiPlus,     to: "/dashboard/create"    },
   { label: "My URLs",    icon: FiLink2,    to: "/dashboard/urls"      },
-  { label: "Analytics",  icon: FiBarChart2,to: "/dashboard/analytics" },
   { label: "Profile",    icon: FiUser,     to: "/dashboard/profile"   },
 ];
 

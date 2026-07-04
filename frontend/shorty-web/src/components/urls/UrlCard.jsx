@@ -96,7 +96,7 @@ export default function UrlCard({ url, onDelete }) {
         {/* Analytics */}
 
         <button
-          onClick={() => navigate(`/dashboard/analytics/${url.id}`)}
+          onClick={() => navigate(`/dashboard/analytics/${url.shortCode}`)}
           className="flex items-center justify-center gap-2 rounded-lg border border-slate-700 px-4 py-3 transition hover:bg-slate-800"
         >
           <FiBarChart2 />
