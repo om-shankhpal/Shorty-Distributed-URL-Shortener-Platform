@@ -43,26 +43,30 @@ const FEATURES = [
 function Navbar() {
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50 border-b border-slate-800/60 backdrop-blur-md"
-      style={{ backgroundColor: "rgba(15, 23, 42, 0.85)" }}
+      className="fixed inset-x-0 top-0 z-50 border-b border-slate-800/60 backdrop-blur-md"
+      style={{ backgroundColor: "rgba(15,23,42,0.85)" }}
     >
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+        {/* Logo */}
         <Link
           to="/"
           className="font-mono text-xl font-bold tracking-tight text-white"
         >
           <span className="text-blue-400">/</span>shorty
         </Link>
-        <div className="flex items-center gap-3">
+
+        {/* Navigation */}
+        <div className="flex items-center gap-2">
           <Link
             to="/login"
-            className="px-4 py-2 text-sm font-medium text-slate-400 hover:text-white transition-colors"
+            className="rounded-lg px-3 py-2 text-sm font-medium text-slate-400 transition-colors hover:text-white"
           >
             Login
           </Link>
+
           <Link
             to="/register"
-            className="px-5 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors"
+            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-500"
           >
             Register
           </Link>
@@ -134,51 +138,60 @@ function HeroTerminal() {
 
 function Hero() {
   return (
-    <section className="min-h-screen flex items-center pt-20">
-      <div className="max-w-7xl mx-auto px-6 w-full py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+    <section className="pt-20 pb-12 lg:min-h-screen lg:flex lg:items-center">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
+        <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-2">
           <div>
             <div
-              className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 border border-blue-500/20"
-              style={{ backgroundColor: "rgba(59,130,246,0.07)" }}
+              className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/20 px-4 py-1.5"
+              style={{
+                backgroundColor: "rgba(59,130,246,0.07)",
+              }}
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-green-400"></span>
-              <span className="font-mono text-xs text-blue-400 font-medium">
+              <span className="h-1.5 w-1.5 rounded-full bg-green-400"></span>
+
+              <span className="font-mono text-xs font-medium text-blue-400">
                 v1.0 · Open Source
               </span>
             </div>
 
-            <h1 className="text-5xl xl:text-6xl font-extrabold text-white leading-tight tracking-tight mb-5">
+            <h1 className="mb-5 text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl xl:text-6xl">
               Production-Grade
               <br />
               <span className="text-blue-400">URL Shortener</span>
             </h1>
 
-            <p className="text-lg text-slate-400 leading-relaxed mb-9 max-w-lg">
+            <p className="mb-8 max-w-lg text-base leading-relaxed text-slate-400 sm:text-lg">
               A microservices reference architecture demonstrating Spring Boot,
               JWT authentication, Redis caching, Kafka event streaming, and
               Docker.
             </p>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row">
               <Link
                 to="/login"
-                className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-500"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-500 sm:w-auto"
               >
                 Get Started
+
                 <FiArrowRight size={15} />
               </Link>
-              <button className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-slate-300 hover:text-white border border-slate-700 hover:border-slate-500 rounded-lg transition-colors">
-                <FiGithub size={15} /> GitHub
+
+              <button className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-700 px-6 py-3 text-sm font-semibold text-slate-300 transition hover:border-slate-500 hover:text-white sm:w-auto">
+                <FiGithub size={15} />
+
+                GitHub
               </button>
             </div>
 
-            <div className="flex flex-wrap gap-2 mt-9">
+            <div className="mt-6 flex flex-wrap gap-2">
               {TECH_PILLS.map((tech) => (
                 <span
                   key={tech}
-                  className="px-3 py-1 text-xs font-mono text-slate-500 rounded-full"
-                  style={{ backgroundColor: "#1e293b" }}
+                  className="rounded-full px-3 py-1 text-xs font-mono text-slate-500"
+                  style={{
+                    backgroundColor: "#1e293b",
+                  }}
                 >
                   {tech}
                 </span>
@@ -196,39 +209,50 @@ function Hero() {
 function FeatureCard({ icon, title, desc }) {
   return (
     <div
-      className="rounded-xl p-6 border border-slate-800 hover:border-blue-500/50 transition-colors group"
+      className="group rounded-xl border border-slate-800 p-6 transition-colors hover:border-blue-500/50"
       style={{ backgroundColor: "#0d1117" }}
     >
       <div
-        className="w-10 h-10 rounded-lg flex items-center justify-center text-blue-400 mb-5 border border-blue-500/15"
-        style={{ backgroundColor: "rgba(59,130,246,0.08)" }}
+        className="mb-5 flex h-10 w-10 items-center justify-center rounded-lg border border-blue-500/15 text-blue-400"
+        style={{
+          backgroundColor: "rgba(59,130,246,0.08)",
+        }}
       >
         {icon}
       </div>
-      <h3 className="text-sm font-semibold text-slate-200 mb-2">{title}</h3>
-      <p className="text-xs text-slate-500 leading-relaxed">{desc}</p>
+
+      <h3 className="mb-2 text-base font-semibold text-slate-200">
+        {title}
+      </h3>
+
+      <p className="text-sm leading-relaxed text-slate-500">
+        {desc}
+      </p>
     </div>
   );
 }
 
 function Features() {
   return (
-    <section className="border-t border-slate-800/60 py-24">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-14">
-          <p className="font-mono text-xs font-semibold uppercase tracking-widest text-blue-400 mb-3">
+    <section className="border-t border-slate-800/60 py-14 sm:py-20 lg:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="mb-10 text-center sm:mb-14">
+          <p className="mb-3 font-mono text-xs font-semibold uppercase tracking-widest text-blue-400">
             Architecture
           </p>
-          <h2 className="text-3xl font-bold text-white">
+
+          <h2 className="text-2xl font-bold text-white sm:text-3xl">
             Built on solid foundations
           </h2>
-          <p className="text-slate-500 mt-3 text-base">
+
+          <p className="mt-3 text-sm text-slate-500 sm:text-base">
             Each layer of the stack earns its place.
           </p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {FEATURES.map((f) => (
-            <FeatureCard key={f.title} {...f} />
+
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {FEATURES.map((feature) => (
+            <FeatureCard key={feature.title} {...feature} />
           ))}
         </div>
       </div>
@@ -238,15 +262,19 @@ function Features() {
 
 function Footer() {
   return (
-    <footer className="border-t border-slate-800/60 py-7">
-      <div className="max-w-7xl mx-auto px-6 flex flex-wrap items-center justify-between gap-4">
+    <footer className="border-t border-slate-800/60 py-8">
+      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 text-center sm:flex-row sm:px-6 sm:text-left">
         <span className="font-mono text-base font-bold text-slate-600">
           <span className="text-blue-500">/</span>shorty
         </span>
+
         <p className="text-sm text-slate-500">
           Built with React + Spring Boot Microservices.
         </p>
-        <p className="text-xs text-slate-700">© {new Date().getFullYear()} Shorty</p>
+
+        <p className="text-xs text-slate-700">
+          © {new Date().getFullYear()} Shorty
+        </p>
       </div>
     </footer>
   );
