@@ -8,11 +8,6 @@ import {
   FiArrowRight,
 } from "react-icons/fi";
 
-const NAV_LINKS = [
-  { label: "Login", variant: "ghost" },
-  { label: "Register", variant: "primary" },
-];
-
 const TECH_PILLS = [
   "Spring Boot 3",
   "JWT",
@@ -52,9 +47,12 @@ function Navbar() {
       style={{ backgroundColor: "rgba(15, 23, 42, 0.85)" }}
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <span className="font-mono text-xl font-bold text-white tracking-tight">
+        <Link
+          to="/"
+          className="font-mono text-xl font-bold tracking-tight text-white"
+        >
           <span className="text-blue-400">/</span>shorty
-        </span>
+        </Link>
         <div className="flex items-center gap-3">
           <Link
             to="/login"
@@ -163,9 +161,13 @@ function Hero() {
             </p>
 
             <div className="flex flex-wrap gap-3">
-              <button className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors">
-                Get Started <FiArrowRight size={15} />
-              </button>
+              <Link
+                to="/login"
+                className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-500"
+              >
+                Get Started
+                <FiArrowRight size={15} />
+              </Link>
               <button className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-slate-300 hover:text-white border border-slate-700 hover:border-slate-500 rounded-lg transition-colors">
                 <FiGithub size={15} /> GitHub
               </button>
@@ -244,7 +246,7 @@ function Footer() {
         <p className="text-sm text-slate-500">
           Built with React + Spring Boot Microservices.
         </p>
-        <p className="text-xs text-slate-700">© 2025 Shorty</p>
+        <p className="text-xs text-slate-700">© {new Date().getFullYear()} Shorty</p>
       </div>
     </footer>
   );

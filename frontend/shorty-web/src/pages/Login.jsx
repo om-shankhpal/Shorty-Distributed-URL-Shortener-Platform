@@ -1,17 +1,27 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+
 import AuthLayout from "../components/layout/AuthLayout";
 import { login } from "../services/authService";
+import { showSuccess, showError } from "../utils/toast";
 
 export default function Login() {
   const navigate = useNavigate();
+  const passwordRef = useRef(null);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
+      setLoading(true);
+
       const response = await login({
         email,
         password,
@@ -22,11 +32,13 @@ export default function Login() {
       localStorage.setItem("email", response.email);
       localStorage.setItem("fullName", response.fullName);
 
-      navigate("/dashboard");
+      showSuccess(`Welcome back, ${response.fullName}!`);
 
-      console.log(response);
+      navigate("/dashboard", { replace: true });
     } catch (error) {
-      console.error(error);
+      showError(error.response?.data?.message || "Invalid email or password.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,35 +56,63 @@ export default function Login() {
       }
     >
       <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Email */}
+
         <div>
-          <label className="block text-sm text-slate-300 mb-2">Email</label>
+          <label className="mb-2 block text-sm text-slate-300">Email</label>
 
           <input
             type="email"
+            autoComplete="email"
+            required
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white outline-none focus:border-blue-500"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                passwordRef.current?.focus();
+              }
+            }}
+            className="w-full rounded-lg border border-slate-700 bg-slate-900 px-4 py-3 text-white outline-none focus:border-blue-500"
           />
         </div>
+
+        {/* Password */}
 
         <div>
-          <label className="block text-sm text-slate-300 mb-2">Password</label>
+          <label className="mb-2 block text-sm text-slate-300">Password</label>
 
-          <input
-            type="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 text-white outline-none focus:border-blue-500"
-          />
+          <div className="relative">
+            <input
+              ref={passwordRef}
+              type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
+              required
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full rounded-lg border border-slate-700 bg-slate-900 px-4 py-3 pr-12 text-white outline-none focus:border-blue-500"
+            />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+            >
+              {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+            </button>
+          </div>
         </div>
+
+        {/* Submit */}
 
         <button
           type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-500 transition-colors text-white font-semibold py-3 rounded-lg"
+          disabled={loading}
+          className="w-full rounded-lg bg-blue-600 py-3 font-semibold text-white transition-colors hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Login
+          {loading ? "Signing In..." : "Login"}
         </button>
       </form>
     </AuthLayout>
