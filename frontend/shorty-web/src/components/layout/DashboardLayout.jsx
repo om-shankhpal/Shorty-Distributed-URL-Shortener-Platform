@@ -11,13 +11,10 @@ export default function DashboardLayout() {
     <div className="min-h-screen bg-slate-950 text-white">
       <Navbar onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
 
-      <Sidebar
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <main className="pt-16 lg:pl-64">
-        <div className="px-6 py-8">
+        <div className="px-4 py-6 sm:px-6 sm:py-8">
           <Outlet />
         </div>
       </main>

@@ -36,21 +36,21 @@ export default function UrlCard({ url, onDelete }) {
   });
 
   return (
-    <div className="group rounded-2xl border border-slate-800 bg-slate-900 p-6 transition-all duration-300 hover:border-blue-500/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10">
+    <div className="group rounded-2xl border border-slate-800 bg-slate-900 p-4 sm:p-6 transition-all duration-300 hover:border-blue-500/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10">
       {/* Short URL */}
 
       <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-3 min-w-0">
+        <div className="flex min-w-0 items-start gap-3">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
             <FiLink2 size={22} />
           </div>
 
           <div className="min-w-0">
-            <h3 className="truncate text-lg font-bold text-white">
+            <h3 className="truncate break-all text-base sm:text-lg font-bold text-white">
               {url.shortUrl}
             </h3>
 
-            <p className="mt-1 text-sm text-slate-400" title={url.originalUrl}>
+            <p className="mt-1 break-all text-xs sm:text-sm text-slate-400" title={url.originalUrl}>
               {shortenOriginalUrl(url.originalUrl)}
             </p>
           </div>
@@ -70,12 +70,12 @@ export default function UrlCard({ url, onDelete }) {
 
       {/* Buttons */}
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
         {/* Copy */}
 
         <button
           onClick={copyUrl}
-          className="flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-3 font-medium transition hover:bg-blue-500"
+          className="flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-3 py-3 text-sm font-medium transition hover:bg-blue-500"
         >
           {copied ? <FiCheck /> : <FiCopy />}
           {copied ? "Copied" : "Copy"}
@@ -87,7 +87,7 @@ export default function UrlCard({ url, onDelete }) {
           href={url.shortUrl}
           target="_blank"
           rel="noreferrer"
-          className="flex items-center justify-center gap-2 rounded-lg border border-slate-700 px-4 py-3 transition hover:bg-slate-800"
+          className="flex items-center justify-center gap-2 rounded-lg border border-slate-700 px-3 py-3 text-sm transition hover:bg-slate-800"
         >
           <FiExternalLink />
           Open
@@ -97,7 +97,7 @@ export default function UrlCard({ url, onDelete }) {
 
         <button
           onClick={() => navigate(`/dashboard/analytics/${url.shortCode}`)}
-          className="flex items-center justify-center gap-2 rounded-lg border border-slate-700 px-4 py-3 transition hover:bg-slate-800"
+          className="flex items-center justify-center gap-2 rounded-lg border border-slate-700 px-3 py-3 text-sm transition hover:bg-slate-800"
         >
           <FiBarChart2 />
           Analytics
@@ -107,7 +107,7 @@ export default function UrlCard({ url, onDelete }) {
 
         <button
           onClick={() => onDelete(url.id)}
-          className="flex items-center justify-center gap-2 rounded-lg border border-red-500/30 px-4 py-3 text-red-400 transition hover:bg-red-500/10"
+          className="flex items-center justify-center gap-2 rounded-lg border border-red-500/30 px-3 py-3 text-sm text-red-400 transition hover:bg-red-500/10"
         >
           <FiTrash2 />
           Delete

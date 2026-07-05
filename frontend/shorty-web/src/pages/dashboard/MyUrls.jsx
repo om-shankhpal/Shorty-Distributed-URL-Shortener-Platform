@@ -62,11 +62,11 @@ export default function MyUrls() {
   }, [urls, search]);
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="mx-auto w-full max-w-7xl">
       {/* Header */}
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white">My URLs</h1>
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-white">My URLs</h1>
 
         <p className="mt-2 text-slate-400">
           Manage, organize and share all your shortened links.
@@ -94,7 +94,7 @@ export default function MyUrls() {
       {/* Cards */}
 
       {!loading && filteredUrls.length > 0 && (
-        <div className="grid gap-5">
+        <div className="space-y-4 sm:space-y-5">
           {filteredUrls.map((url) => (
             <UrlCard key={url.id} url={url} onDelete={handleDelete} />
           ))}
