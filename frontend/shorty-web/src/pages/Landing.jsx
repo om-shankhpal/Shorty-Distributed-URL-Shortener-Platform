@@ -173,15 +173,18 @@ function Hero() {
                 className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-500 sm:w-auto"
               >
                 Get Started
-
                 <FiArrowRight size={15} />
               </Link>
 
-              <button className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-700 px-6 py-3 text-sm font-semibold text-slate-300 transition hover:border-slate-500 hover:text-white sm:w-auto">
+              <a
+                href="https://github.com/om-shankhpal"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-700 px-6 py-3 text-sm font-semibold text-slate-300 transition hover:border-slate-500 hover:text-white sm:w-auto"
+              >
                 <FiGithub size={15} />
-
                 GitHub
-              </button>
+              </a>
             </div>
 
             <div className="mt-6 flex flex-wrap gap-2">
@@ -221,13 +224,9 @@ function FeatureCard({ icon, title, desc }) {
         {icon}
       </div>
 
-      <h3 className="mb-2 text-base font-semibold text-slate-200">
-        {title}
-      </h3>
+      <h3 className="mb-2 text-base font-semibold text-slate-200">{title}</h3>
 
-      <p className="text-sm leading-relaxed text-slate-500">
-        {desc}
-      </p>
+      <p className="text-sm leading-relaxed text-slate-500">{desc}</p>
     </div>
   );
 }
