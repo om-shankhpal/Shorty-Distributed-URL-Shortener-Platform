@@ -13,7 +13,7 @@ spring:
         cors-configurations:
           '[/**]':
             allowedOrigins:
-              - "http://localhost:5173"
+              - ${FRONTEND_URL:http://localhost:5173}
             allowedMethods:
               - GET
               - POST
@@ -57,7 +57,7 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
 
 management:
   endpoints:
