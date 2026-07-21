@@ -25,32 +25,25 @@ spring:
 
       discovery:
         locator:
-          enabled: true
-          lower-case-service-id: true
+          enabled: false
 
       routes:
 
         # AUTH SERVICE
         - id: auth-service
-          uri: lb://AUTH-SERVICE
+          uri: https://shorty-auth.onrender.com
           predicates:
             - Path=/auth/**
 
         # URL SERVICE (CRUD APIs)
         - id: url-service
-          uri: lb://URL-SERVICE
+          uri: https://shorty-url-rzvg.onrender.com
           predicates:
             - Path=/urls/**
 
-        # ANALYTICS SERVICE
-        - id: analytics-service
-          uri: lb://ANALYTICS-SERVICE
-          predicates:
-            - Path=/analytics/**
-
         # REDIRECT (IMPORTANT - MUST BE LAST)
         - id: redirect-service
-          uri: lb://URL-SERVICE
+          uri: https://shorty-url-rzvg.onrender.com
           predicates:
             - Path=/**
 
