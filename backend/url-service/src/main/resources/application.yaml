@@ -51,6 +51,7 @@ server:
 
 app:
   base-url: ${APP_BASE_URL:http://localhost:8080}
+  analytics-enabled: ${ANALYTICS_ENABLED:true}
 
 jwt:
   secret: ${JWT_SECRET}
