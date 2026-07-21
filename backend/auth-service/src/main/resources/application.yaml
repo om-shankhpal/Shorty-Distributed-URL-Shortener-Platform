@@ -23,7 +23,7 @@ eureka:
     fetch-registry: true
 
   instance:
-    prefer-ip-address: true
+    prefer-ip-address: false
 
 server:
   port: ${PORT:8081}
