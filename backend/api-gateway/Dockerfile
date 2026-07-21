@@ -4,12 +4,12 @@ WORKDIR /app
 
 COPY . .
 
-RUN mvn clean package -pl url-service -am -DskipTests
+RUN mvn clean package -pl api-gateway -am -DskipTests
 
 FROM eclipse-temurin:17-jre
 
 WORKDIR /app
 
-COPY --from=build /app/url-service/target/*.jar app.jar
+COPY --from=build /app/api-gateway/target/*.jar app.jar
 
 ENTRYPOINT ["java","-jar","app.jar"]
