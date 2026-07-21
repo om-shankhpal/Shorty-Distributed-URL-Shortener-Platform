@@ -26,6 +26,13 @@ eureka:
     hostname: ${RENDER_EXTERNAL_HOSTNAME}
     prefer-ip-address: false
 
+    secure-port-enabled: true
+    non-secure-port-enabled: false
+
+    home-page-url: https://${RENDER_EXTERNAL_HOSTNAME}/
+    status-page-url: https://${RENDER_EXTERNAL_HOSTNAME}/actuator/info
+    health-check-url: https://${RENDER_EXTERNAL_HOSTNAME}/actuator/health
+
 server:
   port: ${PORT:8081}
   address: 0.0.0.0
