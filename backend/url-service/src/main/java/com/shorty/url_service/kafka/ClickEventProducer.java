@@ -12,12 +12,19 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ClickEventProducer {
 
+    @Value("${app.analytics-enabled:true}")
+    private boolean analyticsEnabled;
+
     @Value("${kafka.topics.click-events}")
     private String clickEventTopic;
 
     private final KafkaTemplate<String, ClickEvent> kafkaTemplate;
 
     public void publish(ClickEvent event) {
+
+        if (!analyticsEnabled) {
+            return;
+        }
 
         kafkaTemplate.send(clickEventTopic, event.shortCode(), event)
                 .whenComplete((result, ex) -> {
